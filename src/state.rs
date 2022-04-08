@@ -149,19 +149,14 @@ impl AppState {
                                 Command::SendTextMessage(msg) => {
                                     dc_state.send_text_message(msg).await.unwrap();
                                 }
-                                Command::LoginOrImport => {
-                                    //self.show_add_acc_panel = true
+                                Command::Login(email, password) => {
+                                    let email = email.to_lowercase();
+                                    let (id, dc_ctx) = dc_state.add_account().await.unwrap();
+                                    // FIXME: Don't unwrap this because it's likely to fail
+                                    dc_state.login(id, &dc_ctx, &email, &password).await.unwrap();
+                                    ctx.request_repaint();
                                 }
-                            }
-                            Command::Login(email, password) => {
-                                let email = email.to_lowercase();
-                                let (id, dc_ctx) = dc_state.add_account().await.unwrap();
-                                // FIXME: Don't unwrap this because it's likely to fail
-                                dc_state.login(id, &dc_ctx, &email, &password).await.unwrap();
-                                ctx.request_repaint();
-                            }
-                            Command::CloseSidePanel => {
-
+                                _ => ()
                             }
                         }
                     }
@@ -191,7 +186,7 @@ impl AppState {
             .expect("failed to send cmd");
     }
 
-    /// Returns the receiver for the commands-channel used to 
+    /// Returns the receiver for the commands-channel used to
     /// pass messages inside the app
     pub fn commands_receiver(&self) -> Receiver<Command> {
         self.commands_receiver.clone()
