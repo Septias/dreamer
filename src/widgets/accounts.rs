@@ -1,4 +1,5 @@
 use egui::{Color32, CursorIcon, Frame, Rounding, ScrollArea, SidePanel, Stroke, Ui, Vec2};
+use log::info;
 
 use crate::{
     state::{AppState, Command},
@@ -46,6 +47,28 @@ pub fn render(ui: &mut Ui, state: &AppState) {
                         }
                     });
                 }
+
+                ui.add_space(10.);
+
+                ui.vertical_centered(|ui| {
+                    ui.set_height(40.);
+                    let response = ui.add(
+                        Avatar::new(
+                            "+".to_owned(),
+                            Vec2::splat(40.),
+                            Color32::from_rgb(33, 32, 92),
+                        )
+                        .stroke(Stroke::new(1., Color32::WHITE))
+                        .rounding(Rounding::same(5.)),
+                    );
+                    if response.clicked() {
+                        //state.send_command(Command::SelectAccount(*id));
+                        info!("login or import account triggered");
+                    }
+                    if response.hovered() {
+                        ui.output().cursor_icon = CursorIcon::PointingHand;
+                    }
+                });
             });
         });
 }
