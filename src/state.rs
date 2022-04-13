@@ -72,13 +72,12 @@ impl AppState {
                         s.shared_state.selected_account = Some(info.account);
                         s.shared_state.selected_chat_id = info.chat_id;
                         s.shared_state.selected_chat = info.chat;
-                    }
 
-                    s.chat_list = dc_state.load_chat_list(None).await.unwrap();
-                    if let Some(_chat_id) = s.shared_state.selected_chat_id {
-                        s.message_list = dc_state.load_message_list(None).await.unwrap();
+                        s.chat_list = dc_state.load_chat_list(None).await.unwrap();
+                        if let Some(_chat_id) = s.shared_state.selected_chat_id {
+                            s.message_list = dc_state.load_message_list(None).await.unwrap();
+                        }
                     }
-
                     dbg!(s);
                 }
 
@@ -155,6 +154,9 @@ impl AppState {
                                     // FIXME: Don't unwrap this because it's likely to fail
                                     dc_state.login(id, &dc_ctx, &email, &password).await.unwrap();
                                     ctx.request_repaint();
+                                }
+                                Command::LoginOrImport => {
+                                    warn!("hi");
                                 }
                                 _ => ()
                             }

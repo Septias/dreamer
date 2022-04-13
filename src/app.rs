@@ -1,12 +1,15 @@
 use crate::{
-    state::AppState,
+    state::{AppState, Command},
     widgets::{add_account::AddAccount, mainpanel::render_main_panel, sidebar::render_sidebar},
 };
+use async_std::channel::Receiver;
 use egui::{FontData, FontDefinitions, FontFamily, Visuals};
+use log::info;
 use std::fs;
 
 pub struct App {
     state: AppState,
+    recv: Receiver<Command>,
     add_account_panel: AddAccount,
     show_add_account_panel: bool,
 }
@@ -61,6 +64,7 @@ impl App {
         App {
             add_account_panel: AddAccount::new(),
             show_add_account_panel: false,
+            recv: state.commands_receiver(),
             state,
         }
     }
@@ -68,12 +72,19 @@ impl App {
 
 impl epi::App for App {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut epi::Frame) {
+        info!("new event {:?}", self.recv.try_recv());
+        if let Ok(command) = self.recv.try_recv() {
+            if matches!(command, Command::LoginOrImport) {
+                self.show_add_account_panel = true;
+                info!("open login");
+                ctx.request_repaint();
+            }
+        };
+
         //ctx.set_debug_on_hover(true);
         let width_total = ctx.available_rect().width();
         let side_panel_size = (width_total * 0.25).round();
-
         render_sidebar(ctx, self.state(), side_panel_size);
-
         if self.show_add_account_panel {
             self.add_account_panel.ui(ctx, &self.state);
         }

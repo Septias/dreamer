@@ -1,4 +1,5 @@
 use egui::{Context, Frame, RichText, SidePanel, Window};
+use log::warn;
 
 use crate::{
     state::{AppState, Command},
@@ -21,6 +22,7 @@ impl AddAccount {
     }
 
     pub fn ui(&mut self, ctx: &Context, state: &AppState) {
+        warn!("hi");
         Window::new("PopUp").show(ctx, |ui| {
             ui.label(RichText::new("Login").size(25.).color(*ACCENT_COLOR));
             ui.label("Username");

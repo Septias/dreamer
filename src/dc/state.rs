@@ -516,7 +516,7 @@ impl LocalStateInner {
         let account_ids = accounts.get_all().await;
 
         if account_ids.len() == 0 {
-            panic!(
+            warn!(
                 "There are no available acccounts in your accounts.toml file: {}",
                 HOME_DIR.to_str().unwrap()
             )

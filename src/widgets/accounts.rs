@@ -62,8 +62,7 @@ pub fn render(ui: &mut Ui, state: &AppState) {
                         .rounding(Rounding::same(5.)),
                     );
                     if response.clicked() {
-                        //state.send_command(Command::SelectAccount(*id));
-                        info!("login or import account triggered");
+                        state.send_command(Command::LoginOrImport);
                     }
                     if response.hovered() {
                         ui.output().cursor_icon = CursorIcon::PointingHand;
